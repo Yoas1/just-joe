@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Just Joe</title>
+  <!-- TITLE ICON -->
+  <link rel="icon" type="image/png" href="/static/joe_icon.png">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div id="container">
+  <div id="sidebar">
+    <h3>Users</h3>
+    <ul id="userList"></ul>
+    <img src="/static/joe_icon.png" id="appIcon" alt="Joe Chat">
+  </div>
+
+  <div id="chat">
+    <div id="chatTitle">General Chat</div>
+    <div id="messages"></div>
+    <div id="inputArea">
+      <button id="sendJoe">Send Joe</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast">💬 You received a new Joe!</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.min.js"></script>
+<script src="/static/chat.js"></script>
+</body>
+</html>
