@@ -83,7 +83,7 @@ Create a `compose.yml` file:
 version: '3'
 services:
   just-joe:
-    container_name: bot
+    container_name: just-joe
     image: yoas1/just-joe:v0.0.1
     ports:
       - "5000:5000"
