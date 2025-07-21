@@ -1,5 +1,5 @@
 const socket = io();
-let username = prompt("Enter your username:");
+let username = "";
 let currentChat = 'Everyone';
 let chats = { 'Everyone': [] };
 let unread = {};
@@ -13,8 +13,23 @@ if ('Notification' in window) {
 
 // Load "Joe" sound
 const joeSound = new Audio('/static/joe_sound.mp3');
+const bidenSound = new Audio('/static/biden_sound.mp3');
 
-socket.emit('join', { username });
+function askUsername() {
+  username = prompt("Enter your username:").trim();
+  if (username) {
+    socket.emit('join', { username });
+  } else {
+    askUsername();
+  }
+}
+askUsername();
+
+socket.on('join_error', function(data) {
+  alert(data.message);
+  askUsername();
+});
+
 
 socket.on('user_list', function(users) {
   const list = document.getElementById('userList');
@@ -51,17 +66,22 @@ socket.on('new_message', data => {
   if (!chats[chatId]) chats[chatId] = [];
   chats[chatId].push(data);
 
-  // Play sound only if the message is for a different chat
-  if (chatId !== currentChat && data.from !== username) {
+  const isSystemMessage = data.from === 'System';
+  const isCurrent = chatId === currentChat;
+  const isFromMe = data.from === username;
+
+  // Notify only if private and not current view
+  if (!isSystemMessage && !isCurrent && !isFromMe) {
     unread[chatId] = (unread[chatId] || 0) + 1;
 
-    try {
-      joeSound.play();
-    } catch(e) {
-      console.log('Could not autoplay sound – interaction required');
-    }
+    // Show notification
+    showNotification(`${data.from} sent you a ${data.message}`);
 
-    showNotification(`${data.from} sent you a Joe`);
+    // Choose sound based on message type
+    const sound = data.message === 'Joe Biden' ? bidenSound : joeSound;
+    sound.play().catch(() => {
+      console.log("Sound playback blocked without user interaction");
+    });
   }
 
   renderMessages();

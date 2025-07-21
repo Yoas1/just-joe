@@ -3,7 +3,6 @@ from flask_socketio import SocketIO, emit
 import random
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'just-joe-secret'
 socketio = SocketIO(app)
 
 # Store connected users { sid: username }
@@ -32,7 +31,6 @@ def handle_join(data):
     users[request.sid] = username
     emit('user_list', list(users.values()), broadcast=True)
 
-    # Broadcast a system message (without triggering sound/popups)
     emit('new_message', {
         'from': 'System',
         'to': 'Everyone',
@@ -58,7 +56,6 @@ def handle_send(data):
     to = data['to']
     sender = users.get(request.sid, 'Unknown')
 
-    # 10% chance of sending "Joe Biden" instead of "Joe"
     if biden_countdown == 0:
         message = 'Joe Biden'
         biden_countdown = random.randint(1, 10)
