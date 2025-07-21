@@ -99,14 +99,19 @@ The app will be available at [http://localhost:5000](http://localhost:5000)
 ## 📁 Project Structure
 
 ```
-just-joe/
+just-joe/ 
 ├── app.py                  # Flask server logic
+├── Dockerfile 
+├── requirements.txt
+├── run.sh
 ├── templates/
 │   └── chat.html           # Main HTML page
 ├── static/
 │   ├── style.css           # Styling and layout
 │   ├── chat.js             # Client-side logic
+│   ├── socket.io.min.js
 │   ├── joe_sound.mp3       # Notification sound
+│   ├── biden_sound.mp3     # Notification sound 
 │   └── joe_icon.png        # App icon
 ```
 
