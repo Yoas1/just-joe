@@ -7,6 +7,8 @@
 **Just Joe** is a playful, minimalist real-time chat application where users can send only one word to each other: **"Joe"** 😄.  
 Despite its simplicity, the app supports private chats, desktop alerts, mobile-friendly layout, and visual indicators for unread messages — all using Python and WebSockets.
 
+[Live-Demo](https://just-joe.abadi-projects.org)
+
 ---
 
 ## 🚀 Features
