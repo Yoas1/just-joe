@@ -64,33 +64,46 @@ socket.on('user_list', function(users) {
 });
 
 
+// Get the "Send Joe" button
 const sendButton = document.getElementById('sendJoe');
-let cooldown = false;
-let cooldownDuration = 2; // in seconds
 
+// Cooldown state flag and duration (in seconds)
+let cooldown = false;
+let cooldownDuration = 2;
+
+// On click handler for the button
 sendButton.onclick = function () {
+  // Prevent sending if we're in cooldown
   if (cooldown) return;
 
+  // Emit the "Joe" message to the server
   socket.emit('send_message', { to: currentChat });
 
+  // Begin cooldown
   cooldown = true;
   let remaining = cooldownDuration;
 
+  // Disable button and show countdown text
   sendButton.disabled = true;
   sendButton.textContent = `Wait ${remaining}s`;
 
+  // Start countdown interval (updates text every second)
   const interval = setInterval(() => {
     remaining -= 1;
+
+    // If time remains, update the text
     if (remaining > 0) {
       sendButton.textContent = `Wait ${remaining}s`;
     } else {
+      // Cooldown complete: re-enable button and restore label
       clearInterval(interval);
       cooldown = false;
       sendButton.disabled = false;
       sendButton.textContent = 'Send Joe';
     }
-  }, 1000);
+  }, 1000); // runs every 1 second
 };
+
 
 
 
