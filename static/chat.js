@@ -20,7 +20,6 @@ function askUsername() {
   while (!input) {
     input = prompt("Enter your username:");
     if (input === null) {
-      // אם לחץ cancel - נכריח אותו להישאר בלולאה
       continue;
     }
     input = input.trim();
