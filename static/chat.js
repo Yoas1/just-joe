@@ -32,6 +32,14 @@ socket.on('join_error', function(data) {
 
 
 socket.on('user_list', function(users) {
+  // Clean up ghost users from local state
+  for (const user of Object.keys(chats)) {
+    if (user !== 'Everyone' && user !== username && !users.includes(user)) {
+      delete chats[user];
+      delete unread[user];
+    }
+  }
+
   const list = document.getElementById('userList');
   list.innerHTML = '';
 
@@ -55,9 +63,36 @@ socket.on('user_list', function(users) {
   });
 });
 
-document.getElementById('sendJoe').onclick = function() {
+
+const sendButton = document.getElementById('sendJoe');
+let cooldown = false;
+let cooldownDuration = 2; // in seconds
+
+sendButton.onclick = function () {
+  if (cooldown) return;
+
   socket.emit('send_message', { to: currentChat });
+
+  cooldown = true;
+  let remaining = cooldownDuration;
+
+  sendButton.disabled = true;
+  sendButton.textContent = `Wait ${remaining}s`;
+
+  const interval = setInterval(() => {
+    remaining -= 1;
+    if (remaining > 0) {
+      sendButton.textContent = `Wait ${remaining}s`;
+    } else {
+      clearInterval(interval);
+      cooldown = false;
+      sendButton.disabled = false;
+      sendButton.textContent = 'Send Joe';
+    }
+  }, 1000);
 };
+
+
 
 socket.on('new_message', data => {
   const chatId = data.to === 'Everyone' ? 'Everyone' :
