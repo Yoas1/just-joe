@@ -74,7 +74,7 @@ You can easily run this app using Docker or Docker Compose.
 ### ▶️ Using Docker
 
 ```bash
-docker run -p 5000:5000 yoas1/just-joe:v0.0.1
+docker run -p 5000:5000 yoas1/just-joe:v0.0.2
 ```
 
 ### ▶️ Using Docker Compose
@@ -86,7 +86,7 @@ version: '3'
 services:
   just-joe:
     container_name: just-joe
-    image: yoas1/just-joe:v0.0.1
+    image: yoas1/just-joe:v0.0.2
     ports:
       - "5000:5000"
 ```
