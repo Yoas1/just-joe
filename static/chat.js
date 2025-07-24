@@ -16,14 +16,22 @@ const joeSound = new Audio('/static/joe_sound.mp3');
 const bidenSound = new Audio('/static/biden_sound.mp3');
 
 function askUsername() {
-  username = prompt("Enter your username:").trim();
-  if (username) {
-    socket.emit('join', { username });
-  } else {
-    askUsername();
+  let input = null;
+  while (!input) {
+    input = prompt("Enter your username:");
+    if (input === null) {
+      // אם לחץ cancel - נכריח אותו להישאר בלולאה
+      continue;
+    }
+    input = input.trim();
   }
+  username = input;
+  socket.emit('join', { username });
 }
-askUsername();
+
+document.addEventListener('DOMContentLoaded', () => {
+  askUsername();
+});
 
 socket.on('join_error', function(data) {
   alert(data.message);
@@ -32,16 +40,16 @@ socket.on('join_error', function(data) {
 
 
 socket.on('user_list', function(users) {
-  // Clean up ghost users from local state
+  const list = document.getElementById('userList');
+  list.innerHTML = '';
+
+    // Clean up ghost users from local state
   for (const user of Object.keys(chats)) {
     if (user !== 'Everyone' && user !== username && !users.includes(user)) {
       delete chats[user];
       delete unread[user];
     }
   }
-
-  const list = document.getElementById('userList');
-  list.innerHTML = '';
 
   function createListItem(name) {
     const li = document.createElement('li');

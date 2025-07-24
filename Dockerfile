@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM python:3.11
 
 WORKDIR /app
 
@@ -12,7 +12,6 @@ ENV TZ=Asia/Jerusalem
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -y && \
-    apt-get install -y python3 python3-pip && \
     apt-get install -yq tzdata && \
     ln -fs /usr/share/zoneinfo/Asia/Jerusalem /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
