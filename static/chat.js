@@ -32,6 +32,14 @@ socket.on('join_error', function(data) {
 
 
 socket.on('user_list', function(users) {
+  // Clean up ghost users from local state
+  for (const user of Object.keys(chats)) {
+    if (user !== 'Everyone' && user !== username && !users.includes(user)) {
+      delete chats[user];
+      delete unread[user];
+    }
+  }
+
   const list = document.getElementById('userList');
   list.innerHTML = '';
 
@@ -55,9 +63,49 @@ socket.on('user_list', function(users) {
   });
 });
 
-document.getElementById('sendJoe').onclick = function() {
+
+// Get the "Send Joe" button
+const sendButton = document.getElementById('sendJoe');
+
+// Cooldown state flag and duration (in seconds)
+let cooldown = false;
+let cooldownDuration = 2;
+
+// On click handler for the button
+sendButton.onclick = function () {
+  // Prevent sending if we're in cooldown
+  if (cooldown) return;
+
+  // Emit the "Joe" message to the server
   socket.emit('send_message', { to: currentChat });
+
+  // Begin cooldown
+  cooldown = true;
+  let remaining = cooldownDuration;
+
+  // Disable button and show countdown text
+  sendButton.disabled = true;
+  sendButton.textContent = `Wait ${remaining}s`;
+
+  // Start countdown interval (updates text every second)
+  const interval = setInterval(() => {
+    remaining -= 1;
+
+    // If time remains, update the text
+    if (remaining > 0) {
+      sendButton.textContent = `Wait ${remaining}s`;
+    } else {
+      // Cooldown complete: re-enable button and restore label
+      clearInterval(interval);
+      cooldown = false;
+      sendButton.disabled = false;
+      sendButton.textContent = 'Send Joe';
+    }
+  }, 1000); // runs every 1 second
 };
+
+
+
 
 socket.on('new_message', data => {
   const chatId = data.to === 'Everyone' ? 'Everyone' :
